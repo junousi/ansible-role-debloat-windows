@@ -154,11 +154,6 @@
   loop_control:
     loop_var: hostname
 
-- name: Remove any existing telemetry block rules from Windows Firewall
-  community.windows.win_firewall_rule:
-    name: Block Telemetry IPs (ansible-role-debloat-windows)
-    state: absent
-
 - name: Add telemetry IPs to Windows Firewall
   when: disable_telemetry_dnsblock
   community.windows.win_firewall_rule:
@@ -167,17 +162,4 @@
     enabled: true
     direction: out
     action: block
-    remoteip: "{{ ip_address }}"
-  loop:
-    - "134.170.30.202"
-    - "137.116.81.24"
-    - "157.56.106.189"
-    - "2.22.61.43"
-    - "2.22.61.66"
-    - "204.79.197.200"
-    - "23.218.212.69"
-    - "65.39.117.230"
-    - "65.52.108.33"
-    - "65.55.108.23"
-  loop_control:
-    loop_var: ip_address
+    remoteip: "{{ disable_telemetry_dnsblock_ip_addresses | join(',') }}"
