@@ -149,10 +149,14 @@
   become: true
   when: disable_windows_defender_sample_submission
   ansible.windows.win_regedit:
-    path: HKLM:\SOFTWARE\Microsoft\Windows Defender\Spynet
+    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Spynet
     name: SubmitSamplesConsent
-    data: 0
+    data: 2
     type: dword
+## https://wirediver.com/disable-windows-defender-in-powershell/
+## 's/\SOFTWARE/\SOFTWARE\Policies/' seems to provide a writable key, but unsure if any real impact, per blogpost
+## DWORD==0=="Always prompt"
+## DWORD==2=="Never send"
 
 - name: Get list of default apps requesting Background Access permission
   when: disable_default_background_access
