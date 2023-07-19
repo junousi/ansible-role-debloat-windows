@@ -1,15 +1,8 @@
 ---
 - name: Disable telemetry
   ansible.builtin.include_tasks: disable_telemetry.yml
-
-# We need to call this role in a loop externally as otherwise it will fail for
-# any services that happen not to exist on the target system
 - name: Disable unnecessary services
   ansible.builtin.include_tasks: disable_services.yml
-  vars:
-    service: "{{ item }}"
-  with_items: "{{ disable_services }}"
-
 - name: Disable Windows Defender
   ansible.builtin.include_tasks: disable_windows_defender.yml
 - name: Privacy hardening

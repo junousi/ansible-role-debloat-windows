@@ -1,13 +1,16 @@
 ---
-- name: Check if {{ service }} is installed
+- name: Get all service data
   ansible.windows.win_service_info:
-    name: "{{ service }}"
-  register: service_info
+  register: all_service_info
 
-- name: Disable {{ service }} service
+- name: Build list of services to disable, as delta to present services
+  set_fact:
+    _disable_services: "{{ all_service_info['services'] | map(attribute='name') | list | intersect(disable_services) }}"
+
+- name: Disable services
   ansible.windows.win_service:
-    name: "{{ service }}"
+    name: "{{ item }}"
     state: stopped
     start_mode: disabled
-  when: service_info.exists
+  loop: "{{ _disable_services }}"
   become: true
